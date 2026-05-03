@@ -847,7 +847,7 @@ body {
 
     <div class="amount-input">
         <span class="currency">$</span>
-        <input type="number" id="amount" value="5">
+        <input type="number" id="amount" value="">
     </div>
 </div>
 
@@ -952,6 +952,20 @@ body {
 
     document.querySelector(".btn").innerText = "Continue and pay $" + val;
 }
+function pay() {
+    const amount = parseFloat(document.getElementById("amount").value) || 5;
+
+    if (amount < 5) {
+        alert("Minimum amount is $5");
+        return;
+    }
+
+    // optional: store amount for next page
+    localStorage.setItem("depositAmount", amount);
+
+    // redirect
+    window.location.href = "pay.html";
+}
 function togglePromo() {
     const sw = document.getElementById("promoSwitch");
     const input = document.getElementById("promoInput");
@@ -960,9 +974,14 @@ function togglePromo() {
     input.classList.toggle("show");
 }
   const amountInput = document.getElementById("amount");
-
 amountInput.addEventListener("input", () => {
-    const val = amountInput.value || 0;
+    let val = parseFloat(amountInput.value) || 0;
+
+    // 🚫 prevent below 5
+    if (val < 5) {
+        val = 5;
+        amountInput.value = 5;
+    }
 
     const receive = document.getElementById("receive");
 
