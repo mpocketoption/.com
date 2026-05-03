@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pocket Option</title>
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg, #0c3a66, #062c4a);
+    color: white;
+}
+
+/* MAIN LAYOUT */
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px 20px;
+    box-sizing: border-box;
+}
+
+/* LOGO */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.logo-img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+}
+
+/* TITLE */
+h1 {
+    margin-top: 35px;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+    max-width: 320px;
+}
+
+/* LANGUAGE */
+.lang {
+    margin-top: 15px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* CHART */
+.chart {
+    margin-top: 25px;
+    width: 280px;
+}
+
+.chart img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* BUTTON */
+.btn {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 320px;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    background: linear-gradient(90deg, #1f7fff, #0057ff);
+    box-shadow: 0 8px 20px rgba(0, 87, 255, 0.3);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    transform: scale(1.02);
+}
+
+/* FOOTER */
+.footer {
+    margin-top: 20px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.footer a {
+    color: #66b3ff;
+    text-decoration: none;
+}
+/* INPUT FIELDS (outlined style) */
+.input {
+    width: 100%;
+    max-width: 320px;
+    padding: 16px;
+    margin-top: 18px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    background: transparent;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+    transition: 0.2s ease;
+}
+
+/* PLACEHOLDER */
+.input::placeholder {
+    color: rgba(255,255,255,0.6);
+}
+
+/* FOCUS EFFECT */
+.input:focus {
+    border-color: #4da3ff;
+    box-shadow: 0 0 0 2px rgba(77,163,255,0.15);
+}
+
+/* PASSWORD EYE ICON SPACE */
+.input.password {
+    padding-right: 45px;
+}
+
+/* TITLE */
+h1 {
+    font-size: 32px;
+    margin-top: 30px;
+}
+
+/* SUBTEXT */
+.title p {
+    margin-top: 8px;
+    font-size: 16px;
+    color: rgba(255,255,255,0.8);
+}
+
+.title a {
+    color: #4da3ff;
+    text-decoration: none;
+    border-bottom: 1px solid #4da3ff;
+}
+
+/* CHECKBOX SECTION */
+.checkbox {
+    max-width: 320px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 25px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* CUSTOM CHECKBOX */
+.checkbox input {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.4);
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+}
+
+/* CHECKED STYLE */
+.checkbox input:checked {
+    border-color: #4da3ff;
+    background: #4da3ff;
+}
+
+.checkbox input:checked::after {
+    content: "✓";
+    position: absolute;
+    top: 0;
+    left: 4px;
+    color: white;
+    font-size: 14px;
+}
+
+/* LINKS */
+.checkbox a {
+    color: #4da3ff;
+    text-decoration: none;
+    border-bottom: 1px solid #4da3ff;
+}
+
+/* REGISTRATION BUTTON (real app style) */
+.btn {
+    margin-top: 35px;
+    width: 100%;
+    max-width: 320px;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    color: white;
+    border: none;
+    cursor: pointer;
+
+    /* Gradient like real app */
+    background: linear-gradient(90deg, #2f8cff, #0057ff);
+
+    /* Glow effect */
+    box-shadow: 
+        0 6px 20px rgba(0, 102, 255, 0.35),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+
+    transition: all 0.2s ease;
+}
+
+/* HOVER (slight lift) */
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 
+        0 10px 25px rgba(0, 102, 255, 0.45),
+        inset 0 1px 0 rgba(255,255,255,0.25);
+}
+
+/* CLICK (pressed effect) */
+.btn:active {
+    transform: scale(0.97);
+    box-shadow: 
+        0 4px 12px rgba(0, 102, 255, 0.3),
+        inset 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* DISABLED STATE (important for real feel) */
+.btn:disabled {
+    background: rgba(255,255,255,0.2);
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+/* CENTER EVERYTHING NICELY */
+.container {
+    justify-content: flex-start;
+}
+
+/* MOBILE FRIENDLY SPACING */
+@media (max-width: 400px) {
+    .container {
+        padding: 20px 15px;
+    }
+}
+/* REMOVE ANDROID CLICK HIGHLIGHT */
+.btn {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* REMOVE FOCUS OUTLINE (rectangle) */
+.btn:focus {
+    outline: none;
+}
+
+/* OPTIONAL: remove for all elements */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+.password-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+}
+
+/* Make input full width inside wrapper */
+.password-wrapper .input {
+    width: 100%;
+    padding-right: 50px; /* space for eye */
+}
+
+/* PERFECT CENTERING */
+.eye {
+    position: absolute;
+    right: 16px;
+    top: 0;
+    height: 125%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.eye svg {
+    display: block;
+}
+.input.error {
+    border-color: #ff4d4d;
+    box-shadow: 0 0 0 2px rgba(255,77,77,0.2);
+}
+.eye:active {
+    transform: scale(0.9);
+}
+
+.checkbox input.error {
+    border-color: #ff4d4d !important;
+    background: transparent !important;
+    box-shadow: 0 0 0 2px rgba(255,77,77,0.3);
+}
+#terms.error {
+    border-color: #ff4d4d !important;
+    box-shadow: 0 0 0 2px rgba(255,77,77,0.3);
+}
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 20px;
+    box-sizing: border-box;
+}
+
+/* LOGO */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.logo img {
+    width: 34px;
+    height: 34px;
+}
+
+/* TITLE */
+h1 {
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 25px;
+}
+
+.subtitle a {
+    color: #4da3ff;
+    text-decoration: none;
+    border-bottom: 1px solid #4da3ff;
+}
+
+/* INPUT */
+.input {
+    width: 100%;
+    max-width: 320px;
+    padding: 16px;
+    margin-top: 15px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    background: transparent;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+    transition: 0.2s ease;
+}
+
+.input::placeholder {
+    color: rgba(255,255,255,0.6);
+}
+
+.input:focus {
+    border-color: #4da3ff;
+    box-shadow: 0 0 0 2px rgba(77,163,255,0.15);
+}
+
+/* ERROR */
+.input.error {
+    border-color: #ff4d4d;
+    box-shadow: 0 0 0 2px rgba(255,77,77,0.2);
+}
+
+/* PASSWORD WRAPPER */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+}
+
+.password-wrapper .input {
+    padding-right: 50px;
+}
+
+.eye {
+    position: absolute;
+    right: 16px;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+/* BUTTON */
+.btn {
+    margin-top: 25px;
+    width: 100%;
+    max-width: 320px;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(90deg, #2f8cff, #0057ff);
+    box-shadow: 0 6px 20px rgba(0,102,255,0.35);
+    transition: 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+/* LINKS */
+.links {
+    margin-top: 15px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.links a {
+    color: #4da3ff;
+    text-decoration: none;
+}.error {
+    border: 1px solid red;
+    animation: shake 0.2s;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-3px); }
+    100% { transform: translateX(0); }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">
+        <img src="logo.png" alt="Pocket Option Logo" class="logo-img">
+        PocketOption
+    </div>
+    
+    <div class="title">
+        <h1>Login</h1>
+        <p>Don’t have an account? <a href="register.html">Register</a>
+    </div>
+
+    <input id="email" class="input" type="email" placeholder="Email">
+
+    <div class="password-wrapper">
+        <input id="password" class="input" type="password" placeholder="Password">
+
+        <div class="eye" onclick="togglePassword()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M12 5C7 5 3 9 2 12c1 3 5 7 10 7s9-4 10-7c-1-3-5-7-10-7z"
+                      stroke="white" stroke-width="2"/>
+                <circle cx="12" cy="12" r="3" stroke="white" stroke-width="2"/>
+            </svg>
+        </div>
+    </div>
+
+    <button class="btn" id="loginBtn">LOGIN</button>
+
+    <div class="links">
+        <a href="#">Forgot password?</a>
+    </div>
+
+</div>
+<!-- Firebase scripts -->
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCbuLoyGu6v7dJUDQ0iM2DkvEZs0D9z2Do",
+  authDomain: "mfs-africa-ltd.firebaseapp.com",
+  projectId: "mfs-africa-ltd",
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// toggle password
+function togglePassword() {
+    const pass = document.getElementById("password");
+    pass.type = pass.type === "password" ? "text" : "password";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+document.querySelectorAll("input").forEach(input => {
+    input.addEventListener("input", () => {
+        input.classList.remove("error");
+    });
+});
+    document.getElementById("loginBtn").addEventListener("click", function () {
+
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+
+        let valid = true;
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(email.value.trim())) {
+            email.classList.add("error");
+            navigator.vibrate?.(150);
+            valid = false;
+        } else {
+            email.classList.remove("error");
+        }
+
+        if (password.value.trim().length < 6) {
+            password.classList.add("error");
+            navigator.vibrate?.(150);
+            valid = false;
+        } else {
+            password.classList.remove("error");
+        }
+
+        if (!valid) return;
+
+        auth.signInWithEmailAndPassword(email.value, password.value)
+        .then(() => {
+            window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+
+            const email = document.getElementById("email");
+            const password = document.getElementById("password");
+
+            email.classList.remove("error");
+            password.classList.remove("error");
+
+            navigator.vibrate?.(200);
+
+            if (error.code === "auth/user-not-found") {
+                email.classList.add("error");
+            }
+            else if (error.code === "auth/wrong-password") {
+                password.classList.add("error");
+            }
+            else {
+                email.classList.add("error");
+                password.classList.add("error");
+            }
+        });
+
+    });
+
+}); // ✅ THIS WAS MISSING
+</script>
+</script>
+
+</body>
+</html>

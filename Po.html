@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket Option</title>
+    <style>
+        :root {
+            --bg-deep: #0b0e14; /* Deep black background */
+            --bg-panel: #1a202c; /* Panel navy */
+            --bg-card: #222a38; /* "Burly" card grey-navy */
+            --bg-input: #11151c; /* Recessed input boxes */
+            --green: #4caf50; /* Online status and up button */
+            --green-bright: #00c853; /* Header green match */
+            --red: #f44336; /* Down button */
+            --blue-glow: #00a8ff; /* Active price and AI glow */
+            --text-muted: #8a94a6; /* Labels and inactive icons */
+            --grid-line: rgba(255, 255, 255, 0.03); /* Subtle grid */
+        }
+
+body {
+    margin: 0;
+    min-height: 100dvh;   /* 🔥 better than 100vh */
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: auto;     /* ✅ allow scrolling */
+    overflow-x: hidden;
+
+
+    background: 
+        linear-gradient(rgba(11,14,20,0.85), rgba(11,14,20,0.95)),
+        url("https://images.unsplash.com/photo-1501785888041-af3ef285b470");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+        /* --- GLOBAL GRID --- */
+
+
+        /* --- TOP BAR (PIXEL MATCH UPDATE) --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            z-index: 10;
+        }
+
+        .header-left { display: flex; gap: 48px; align-items: center; }
+
+        .profile-container {
+            width: 44px; height: 44px;
+            background: #2d3748;
+            border-radius: 50%;
+            position: relative;
+            border: 2px solid var(--green-bright);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .profile-container svg { width: 28px; height: 28px; fill: #94a3b8; }
+        
+        .profile-badge {
+            position: absolute; top: -1px; right: -1px;
+            width: 14px; height: 14px;
+            background: var(--green-bright);
+            border: 2px solid var(--bg-deep);
+            border-radius: 50%;
+            color: white; font-size: 11px; font-weight: 900;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .gift-box {
+            width: 44px; height: 44px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .gift-svg { width: 30px; height: 30px; filter: drop-shadow(0 4px 8px rgba(0, 168, 255, 0.6)); }
+
+        .header-right { display: flex; align-items: center; gap: 12px; }
+
+        .balance-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 4px 14px;
+            border-radius: 12px;
+            min-width: 100px;
+        }
+        .balance-label { font-size: 10px; color: var(--text-muted); display: block; letter-spacing: 0.2px; }
+        .balance-val { font-size: 18px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+
+        .wallet-btn {
+            width: 44px; height: 44px;
+            background: radial-gradient(circle at top left, #065f46, #043d2e);
+            border: 1.2px solid var(--green-bright);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .wallet-btn svg { width: 24px; height: 24px; stroke: var(--green-bright); stroke-width: 2.2; }
+
+        /* --- ASSET BAR --- */
+        .asset-row { padding: 0 15px; display: flex; gap: 8px; z-index: 10; }
+        .asset-pill {
+            background: var(--bg-panel);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 12px; font-weight: bold;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        /* --- CHART AREA & TIMELINES --- */
+        .chart-container {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-chart {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Grid timestamps labels */
+        .grid-timelines {
+            position: absolute;
+            bottom: 5px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            color: var(--text-muted);
+            font-size: 10px;
+            pointer-events: none;
+        }
+
+        /* The horizontal timeline row between Chart and Panel */
+        .horizontal-timeline {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 24px;
+            color: var(--text-muted);
+            font-size: 12px;
+            z-index: 5;
+        }
+
+        .price-line {
+            width: 100%; height: 1px;
+            background: rgba(0, 168, 255, 0.3);
+            display: flex; justify-content: flex-end;
+        }
+        .price-bubble {
+            background: var(--blue-glow);
+            padding: 2px 8px; border-radius: 4px;
+            font-size: 11px; font-weight: bold;
+            transform: translateY(-50%);
+        }
+
+.trade-panel {
+    position: relative;
+    z-index: 5;
+
+background: linear-gradient(
+    180deg,
+    rgba(32, 40, 55, 0.98),
+    rgba(18, 22, 30, 1)
+);
+
+    border-radius: 22px 22px 0 0;
+    padding: 16px;
+
+    /* 🔥 soft top glow line */
+    border-top: 1px solid rgba(0, 200, 83, 0.25);
+
+    /* 🔥 depth like real app */
+box-shadow: 
+    0 -10px 30px rgba(0,0,0,0.8),
+    0 -2px 10px rgba(0,200,83,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.05); /* 🔥 KEY */
+
+    backdrop-filter: blur(10px);
+}
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .input-card {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .label-sm { color: var(--text-muted); font-size: 11px; margin-bottom: 4px; display: block; }
+        .val-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 15px; align-items: center;}
+
+        .payout-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 15px; }
+
+        .btn-row { display: flex; gap: 10px; height: 50px; }
+        .btn { border: none; border-radius: 14px; color: white; cursor: pointer; font-weight: bold; }
+        .btn-green { background: var(--green); flex: 1; font-size: 24px; }
+        .btn-red { background: var(--red); flex: 1; font-size: 24px; }
+
+        /* --- BOTTOM NAV (BURLY CARDS) --- */
+        .bottom-nav {
+            background: var(--bg-deep);
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 8px 25px 8px;
+            gap: 6px;
+            z-index: 10;
+        }
+
+.nav-card {
+    background: #1c2330; /* darker like Pocket Option */
+    flex: 1;
+    border-radius: 14px;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 12px rgba(0, 200, 83, 0.3);
+}
+.nav-card {
+    background: #1c2330;
+    border: 1px solid transparent;
+    box-shadow: none;
+}
+
+.nav-card.active {
+    background: linear-gradient(180deg, #00c85320, #00c85305);
+    border: 1px solid rgba(0, 200, 83, 0.4);
+    box-shadow: 0 0 12px rgba(0, 200, 83, 0.3);
+}
+.nav-card.active span {
+    color: #00c853;
+}
+
+.nav-card.active svg {
+    stroke: #00c853;
+}
+.nav-card span {
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+        
+        /* SVG Icon common */
+        svg { fill: none; stroke: var(--text-muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.nav-card svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--text-muted);
+    stroke-width: 2.5;
+    transition: all 0.2s ease;
+}
+
+@keyframes pulseLine {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+.price-line {
+    animation: pulseLine 1.5s infinite;
+}
+.btn:active {
+    transform: scale(0.95);
+    filter: brightness(1.3);
+}
+.live-dot {
+    position: absolute;
+    right: 20px;
+    width: 8px;
+    height: 8px;
+    background: var(--blue-glow);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--blue-glow);
+    animation: pulseDot 1s infinite;
+}
+
+@keyframes pulseDot {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+}
+.live-dot {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--blue-glow);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--blue-glow);
+    animation: pulseDot 1s infinite;
+}
+.price-line {
+    animation: pulseLine 1.2s infinite;
+    box-shadow: 0 0 10px rgba(0,168,255,0.2);
+}
+
+/* text + icon color when active */
+.nav-card.active span {
+    color: #00c853;
+}
+
+.nav-card.active svg {
+    stroke: #00c853;
+}
+
+/* default text */
+.nav-card span {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+/* icons */
+.nav-card svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--text-muted);
+    stroke-width: 2.5;
+}
+#chart {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-y: auto;   /* ✅ allow vertical scroll */
+    overflow-x: hidden; /* prevent sideways scroll */
+}
+
+.trade-panel {
+    flex-shrink: 0;
+}
+.bottom-nav {
+    flex-shrink: 0;
+}
+.chart-container {
+    overflow: hidden;
+}
+
+.main-chart {
+    overflow: hidden;
+}
+.expiry-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 80%;
+    width: 2px;
+
+    background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.9),
+        rgba(255,255,255,0.2)
+    );
+
+    box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    z-index: 20;
+}
+
+/* 🔥 FLAG ICON */
+.flag-icon {
+    position: absolute;
+
+    top: -1px;        /* aligns with top line */
+    left: -1px;       /* 🔥 attach to LEFT of line (important) */
+
+    width: 18px;
+    height: 14px;
+
+    fill: #ffffff;
+
+    filter: drop-shadow(0 0 4px rgba(255,255,255,0.8));
+}
+.price-line {
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 2px;
+    background: #00e5ff; /* bright color so you see it */
+    z-index: 10;
+    pointer-events: none;
+}
+.entry-line {
+    position: absolute;
+    right: 90px;
+    width: 2px;
+    height: 100%;
+    background: #ffffff33;
+}
+/* 🔥 AMOUNT POPUP */
+.amount-popup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    background: #1a202c;
+    border-radius: 16px 16px 0 0;
+
+    height: 260px; /* 🔥 smaller height */
+
+    display: none;
+    z-index: 1000;
+
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.6);
+}
+.popup-content {
+    width: 92%;
+    max-width: 340px; /* 🔥 smaller = better look */
+
+    background: #1c2330;
+    border-radius: 20px;
+
+    padding: 16px;
+
+    box-shadow: 
+        0 10px 30px rgba(0,0,0,0.7),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.popup-display {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.keypad button {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    background: #2d3748;
+    color: white;
+}
+
+.done-btn {
+    margin-top: 10px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: #00c853;
+    color: white;
+    font-weight: bold;
+}
+.amount-popup {
+    position: fixed;
+    bottom: 0;          /* 🔥 anchor to screen */
+    left: 0;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    z-index: 99999;     /* 🔥 higher than ANYTHING */
+
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+/* actual keyboard box */
+.popup-content {
+    width: 92%;              /* instead of 100% */
+    max-width: 380px;       /* tighter like real apps */
+    margin: 0 auto;         /* center */
+    background: #1c2330;
+    border-radius: 20px 20px 0 0;
+}
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+}
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background: radial-gradient(circle at center, transparent 20%, rgba(11,14,20,0.9) 80%);
+    
+    z-index: 0;
+}
+.header,
+.asset-row,
+.chart-container,
+.trade-panel,
+.bottom-nav {
+    position: relative;
+    z-index: 2;
+}
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column; /* 🔥 IMPORTANT */
+    overflow: hidden;
+}
+.btn-green {
+    background: #00c853;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.3);
+}
+
+.btn-red {
+    background: #f44336;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.3);
+}
+@keyframes aiGlow {
+    0%, 100% { box-shadow: 0 0 6px rgba(0,168,255,0.3); 
+    
+    }
+    50% { box-shadow: 0 0 10px rgba(0,168,255,0.5); }
+}
+.btn {
+    transform: translateZ(0);
+}
+.trade-card {
+    background: #1a202c;
+    border-radius: 20px;
+    padding: 15px;
+    margin: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+}
+
+/* INPUTS */
+.input-grid {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.input-box {
+    flex: 1;
+    background: #11151c;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.input-box span {
+    font-size: 11px;
+    color: #8a94a6;
+}
+
+.input-box div {
+    font-size: 16px;
+    font-weight: bold;
+}
+.input-card {
+    background: #0f141c;
+    border-radius: 12px;
+    padding: 10px 14px;
+
+    border: 1px solid rgba(255,255,255,0.04);
+
+    box-shadow: 
+        inset 0 2px 6px rgba(0,0,0,0.6),
+        0 1px 0 rgba(255,255,255,0.03);
+}
+
+/* AI BUTTON */
+.btn-ai {
+    position: relative;
+    background: linear-gradient(135deg, #1da1f2, #00c6ff);
+    border: none;
+    border-radius: 18px;
+    height: 65px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 1px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    box-shadow: 0 0 15px rgba(0, 198, 255, 0.6);
+}
+
+/* BUY / SELL */
+.trade-actions {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.btn-buy {
+    background: #00c853;
+    border: none;
+    border-radius: 16px;
+    height: 65px;
+    font-size: 22px;
+    color: white;
+}
+
+.btn-sell {
+    background: #ff3b30;
+    border: none;
+    border-radius: 16px;
+    height: 65px;
+    font-size: 22px;
+    color: white;
+}
+
+/* CLICK EFFECT */
+button:active {
+    transform: scale(0.96);
+}
+.main-chart {
+    position: relative;
+    overflow: hidden;
+}
+
+/* 🔥 GRID ONLY INSIDE CHART */
+.main-chart::before {
+    content: "";
+    position: absolute;
+    top: 0;   /* 🔥 important */
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background-size: 80px 40px;
+    background-image: 
+        linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%), 
+        linear-gradient(90deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%);
+
+    pointer-events: none;
+}
+.header {
+    position: relative;
+}
+
+.header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(0, 168, 255, 0.6),
+        transparent
+    );
+
+    box-shadow: 0 0 8px rgba(0,168,255,0.5);
+}
+/* REMOVE ANY GAP ABOVE CHART */
+.chart-container {
+    position: relative;
+
+    margin-top: -33px; /* 🔥 pull it upward */
+}
+
+/* FORCE CHART TO TOUCH HEADER LINE */
+.main-chart {
+    margin-top: -2px; /* 🔥 pulls it up to touch the blue line */
+}
+
+/* REMOVE EXTRA SPACE FROM ASSET ROW */
+.asset-row {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* REMOVE HEADER EXTRA HEIGHT */
+.header {
+    padding-bottom: 6px; /* reduce bottom spacing */
+}
+.header,
+.asset-row {
+    position: relative;
+    z-index: 50; /* 🔥 always on top of chart */
+}
+.asset-pill {
+    background: rgba(26, 32, 44, 0.95); /* solid dark */
+    border: 1px solid rgba(0, 200, 83, 0.4);
+    color: #ffffff;
+
+    backdrop-filter: blur(6px); /* 🔥 glass effect */
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+.balance-pill {
+    background: rgba(17, 21, 28, 0.95);
+    border: 1px solid rgba(0, 200, 83, 0.4);
+    
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 12px rgba(0,0,0,0.6);
+}
+
+.balance-val {
+    color: #00c853; /* 🔥 bright green amount */
+    font-weight: 700;
+}
+.main-chart::before {
+    z-index: 1; /* keep grid BELOW UI */
+}
+
+.price-line,
+.entry-line,
+.expiry-line {
+    z-index: 2;
+}
+.asset-row {
+    margin-top: 4px;
+}
+.trade-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    width: 80%;
+    height: 2px;
+
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(0, 200, 83, 0.6),
+        transparent
+    );
+
+    border-radius: 50%;
+}
+.trade-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px 22px 0 0;
+
+    border: 1px solid rgba(255,255,255,0.04);
+    pointer-events: none;
+}
+.entry-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: yellow;
+    z-index: 5;
+}
+.entry-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: yellow;
+    z-index: 10;
+}
+body::before {
+    pointer-events: none; /* 🔥 THIS FIXES CLICK BLOCK */
+}
+
+.trade-card {
+    position: relative;
+    z-index: 9999; /* 🔥 very high */
+    position: fixed;   /* 🔥 THIS IS THE KEY */
+    bottom: 90px;      /* 🔥 pushes it ABOVE nav */
+}
+
+.btn-buy,
+.btn-sell {
+    position: relative;
+    z-index: 200;
+    cursor: pointer;
+}
+.main-chart,
+#chart {
+    pointer-events: none;
+}
+.btn-buy:active {
+    background: #00e676;
+}
+
+.btn-sell:active {
+    background: #ff5252;
+}
+.main-chart,
+.global-grid,
+.expiry-line,
+.price-line,
+.entry-line {
+    pointer-events: none;
+}
+.btn-buy,
+.btn-sell {
+    pointer-events: auto;
+    z-index: 10000;
+    position: relative;
+    cursor: pointer;
+}
+.btn-buy:active {
+    box-shadow: 0 0 20px #00c853;
+}
+
+.btn-sell:active {
+    box-shadow: 0 0 20px #f44336;
+}
+#chart {
+    pointer-events: none; /* 🔥 THIS IS THE MAIN FIX */
+}
+.main-chart {
+    pointer-events: none;
+}
+.trade-card {
+    position: relative;
+    z-index: 99;
+}
+
+.btn-buy,
+.btn-sell {
+    pointer-events: auto;
+    z-index: 10000;
+    position: relative;
+}
+button, .btn-buy, .btn-sell {
+    -webkit-tap-highlight-color: transparent; /* removes white flash */
+    outline: none;
+}
+
+button:focus, .btn-buy:focus, .btn-sell:focus {
+    outline: none;
+}
+/* 🔥 Disable long-press copy menu */
+* {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* 🔥 Remove tap highlight (white flash) */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+.amount-popup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* 🔥 important */
+
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+
+    z-index: 9999;
+}
+#amountVal {
+    color: #ffffff;
+}
+#popupAmount {
+    color: #ffffff;
+    font-weight: bold;
+}
+#timeVal {
+    color: #ffffff; /* 👈 makes it white */
+    font-weight: 600;
+}
+.payout-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin: 12px 0;
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.left {
+    color: #aaa;
+}
+
+.right {
+    color: #aaa;
+}
+
+.center {
+    font-weight: bold;
+    color: #00e676;
+    font-size: 18px;
+}
+
+#payoutMoney, #profitVal {
+    color: #00e676;
+    font-weight: bold;
+}
+.price-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: #4fc3f7;
+}
+
+.price-bubble {
+    position: absolute;
+    right: 0;
+    transform: translateY(-50%);
+    background: #4fc3f7;
+    color: #000;
+    padding: 3px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+.ai-icon {
+    background: white;
+    color: #1da1f2;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 0 12px rgba(255,255,255,0.8);
+}
+.trade-panel,
+.bottom-nav {
+    position: relative;   /* ❗ not fixed */
+}
+.bottom-nav {
+    position: fixed;   /* 🔥 FIX */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    z-index: 9999;     /* stay above everything */
+
+    background: var(--bg-deep);
+    padding: 10px 8px 25px 8px;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+}
+.bottom-nav {
+    padding-bottom: calc(25px + env(safe-area-inset-bottom));
+}
+.trade-panel {
+    margin-bottom: 80px; /* same as nav height */
+}
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+body {
+    margin: 0;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: auto;   /* 
+    overflow-x: hidden;
+}
+.trade-panel {
+    margin-bottom: 800px; /* 👈 space above bottom nav */
+}
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+        z-index: 999; /* 🔥 keep it LOW */
+}
+.chart-container {
+    padding-bottom: 100px;
+}
+    </style>
+</head>
+<body>
+  <!-- 🔥 AMOUNT POPUP -->
+<div class="amount-popup" id="amountPopup">
+    <div class="popup-content">
+        <div class="popup-display" id="popupAmount">1</div>
+
+        <div class="keypad">
+            <button onclick="addNum(1)">1</button>
+            <button onclick="addNum(2)">2</button>
+            <button onclick="addNum(3)">3</button>
+
+            <button onclick="addNum(4)">4</button>
+            <button onclick="addNum(5)">5</button>
+            <button onclick="addNum(6)">6</button>
+
+            <button onclick="addNum(7)">7</button>
+            <button onclick="addNum(8)">8</button>
+            <button onclick="addNum(9)">9</button>
+
+            <button onclick="clearAmount()">C</button>
+            <button onclick="addNum(0)">0</button>
+            <button onclick="doneAmount()">OK</button>
+        </div>
+    </div>
+<script>
+let currentAmount = "1";
+
+function openAmount() {
+    document.getElementById("amountPopup").style.transform = "translateY(0)";
+    document.getElementById("popupAmount").innerText = currentAmount;
+}
+
+function addNum(num) {
+    if (currentAmount === "0") currentAmount = "";
+    currentAmount += num;
+    document.getElementById("popupAmount").innerText = currentAmount;
+}
+
+function clearAmount() {
+    currentAmount = "0";
+    document.getElementById("popupAmount").innerText = currentAmount;
+}
+
+function doneAmount() {
+    document.getElementById("amountVal").innerText = currentAmount;
+    document.getElementById("amountPopup").style.transform = "translateY(100%)";
+}
+</script>
+
+<!-- ✅ NAV SCRIPT SEPARATE -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const navCards = document.querySelectorAll('.nav-card');
+
+    navCards.forEach(card => {
+        card.addEventListener('click', () => {
+            navCards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+        });
+    });
+});
+</script>
+</div>
+    <div class="header">
+        <div class="header-left">
+<div class="profile-container" onclick="goProfile()">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <div class="profile-badge">+</div>
+            </div>
+            <div class="gift-box">
+                <svg class="gift-svg" viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="10" width="16" height="11" rx="2" fill="white"/>
+                    <rect x="3" y="7" width="18" height="4" rx="1.5" fill="#00a8ff"/>
+                    <path d="M12 7v14M3 11h18" stroke="#00a8ff" stroke-width="2.5"/>
+                    <path d="M12 7c0-2.5-2-4-4-4s-3 2-3 4h7zm0 0c0-2.5 2-4 4-4s3 2 3 4h-7z" fill="#00a8ff" stroke="white" stroke-width="0.5"/>
+                </svg>
+            </div>
+        </div>
+        <div class="header-right">
+<div class="balance-pill" onclick="goWithdraw()">
+                <span class="balance-label">QT Real USD</span>
+<div class="balance-val" id="balanceVal">0</div>
+            </div>
+<a href="topup.html">
+    <div class="wallet-btn">
+        <svg viewBox="0 0 24 24">
+            <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/>
+            <path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/>
+            <rect x="14" y="11" width="8" height="6" rx="2"/>
+        </svg>
+    </div>
+</a>
+        </div>
+    </div>
+
+    <div class="asset-row">
+        <div class="asset-pill">EUR/USD OTC <span style="font-size: 9px; margin-left:5px;">▼</span></div>
+        <div class="asset-pill" style="padding: 8px 10px;">•••</div>
+    </div>
+
+    <div class="chart-container">
+<div class="expiry-line">
+<svg class="flag-icon" viewBox="0 0 24 16">
+    <path d="M0 0 H20 L16 8 L20 16 H0 Z"/>
+</svg>
+</div>
+
+        <div class="global-grid"></div>
+<div class="main-chart">
+    <canvas id="chart"></canvas>
+
+<div class="price-line">
+    <div class="price-bubble">0.92382</div>
+</div>
+
+<div class="entry-line" style="display:none;"></div> 
+            <div class="grid-timelines">
+                <span>00:32</span>
+                <span>00:48</span>
+                <span>01:04</span>
+                <span>01:20</span>
+            </div>
+        </div>
+
+        <div class="horizontal-timeline">
+            <span>00:32</span>
+            <span>00:48</span>
+            <span>01:04</span>
+            <span>01:20</span>
+        </div>
+    </div>
+
+<div class="trade-card">
+
+    <!-- INPUTS -->
+    <div class="input-grid">
+<div class="input-box" onclick="openTime()">
+    <span>Time</span>
+    <div id="timeVal">00:11</div>
+</div>
+
+        <div class="input-box" onclick="openAmount()">
+            <span>Amount</span>
+            <div id="amountVal">1</div>
+        </div>
+    </div>
+
+    <!-- AI BUTTON -->
+
+<div class="payout-box">
+    <span class="left">
+        Payout <b id="payoutMoney">$1.92</b>
+    </span>
+
+    <span class="center" id="payoutVal">+92%</span>
+
+    <span class="right">
+        Profit <b id="profitVal">+$0.92</b>
+    </span>
+</div>
+    <!-- BUY / SELL -->
+    <div class="trade-actions">
+<button class="btn-buy" onclick="goDeposit()">↑</button>
+
+<button class="btn-ai" onclick="goDeposit()">
+        <span class="ai-icon">AI</span>
+        TRADING
+    </button>
+
+<button class="btn-sell" onclick="goDeposit()">↓</button>
+</div>
+
+</div>
+
+    <div class="bottom-nav">
+        <div class="nav-card">
+            <svg viewBox="0 0 24 24">
+  <polyline points="3 17 9 11 13 15 21 7"/>
+</svg>
+            <span>Trades</span>
+        </div>
+        <div class="nav-card">
+<svg viewBox="0 0 24 24">
+  <rect x="4" y="10" width="3" height="10" fill="none"/>
+  <rect x="10" y="6" width="3" height="14" fill="none"/>
+  <rect x="16" y="3" width="3" height="17" fill="none"/>
+</svg>
+            <span>Signals</span>
+        </div>
+        <div class="nav-card">
+          <svg viewBox="0 0 24 24">
+  <circle cx="9" cy="8" r="3"/>
+  <circle cx="17" cy="8" r="3"/>
+  <path d="M2 20c0-3 3-5 7-5s7 2 7 5"/>
+</svg>
+            <span>Social Trading</span>
+        </div>
+        <div class="nav-card">
+<svg viewBox="0 0 24 24">
+  <polyline points="13 2 3 14 11 14 9 22 21 9 13 9 13 2"/>
+</svg>
+            <span>Express</span>
+        </div>
+        <div class="nav-card">
+<svg viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 16 14"/>
+</svg>
+            <span>Pending</span>
+        </div>
+    </div>
+<script>
+let balance = parseFloat(localStorage.getItem("balance")) || 100;
+let payout = 0.9;
+
+// ===============================
+// 🔥 BASE VARIABLES
+// ===============================
+let candles = [];
+let currentCandle = null;
+let currentPrice = null;
+
+let candleLife = 15000;
+let momentum = 0;
+function updateTimer() {
+    const now = Date.now();
+
+    const elapsed = now % candleLife;
+    const remaining = candleLife - elapsed;
+
+    let seconds = Math.floor(remaining / 1000);
+    let ms = Math.floor((remaining % 1000) / 100);
+
+    let formatted =
+        String(seconds).padStart(2, '0') + ":" +
+        String(ms).padStart(2, '0');
+
+    document.getElementById("timeVal").textContent = formatted;
+
+    requestAnimationFrame(updateTimer);
+}
+function updateProfit() {
+    let amount = parseFloat(document.getElementById("amountVal").textContent);
+
+    let profit = amount * payout;
+    let payoutTotal = amount + profit;
+
+    // Profit → +0.92
+    document.getElementById("profitVal").textContent = "+$" + profit.toFixed(2);
+
+    // Payout → $1.92
+    document.getElementById("payoutMoney").textContent = "$" + payoutTotal.toFixed(2);
+}
+let trendDirection = Math.random() > 0.5 ? 1 : -1;
+let phase = "trend";
+
+// ===============================
+// 🔥 LOAD DATA
+// ===============================
+let savedCandles = JSON.parse(localStorage.getItem("candles") || "[]");
+let lastTime = parseInt(localStorage.getItem("lastTime"));
+let savedPrice = parseFloat(localStorage.getItem("lastPrice"));
+
+currentPrice = savedPrice || 1.08;
+candles = savedCandles.length ? savedCandles : [];
+
+// ===============================
+// 🔥 CANVAS
+// ===============================
+const canvas = document.getElementById("chart");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+let candleWidth = 12;
+let gap = 5;
+
+// ===============================
+// 🔥 MAIN LOOP (SMOOTH)
+// ===============================
+function loop() {
+
+    // 🔄 phase change
+    if (Math.random() > 0.97) {
+        let phases = ["trend", "pullback", "consolidation"];
+        phase = phases[Math.floor(Math.random() * phases.length)];
+    }
+
+    // 🔄 trend change
+    if (Math.random() > 0.98) {
+        trendDirection = Math.random() > 0.5 ? 1 : -1;
+    }
+
+    // ===============================
+    // 🔥 FAST PRICE MOVEMENT
+    // ===============================
+    if (phase === "trend") {
+        momentum += trendDirection * 0.002;
+        momentum = Math.max(Math.min(momentum, 0.05), -0.05);
+
+        currentPrice += momentum + trendDirection * (0.01 + Math.random() * 0.01);
+
+        if (Math.random() > 0.95) {
+            currentPrice += trendDirection * (0.05 + Math.random() * 0.05);
+        }
+    }
+
+    if (phase === "pullback") {
+        momentum *= 0.4;
+        currentPrice += (-trendDirection) * (0.008 + Math.random() * 0.008);
+    }
+
+    if (phase === "consolidation") {
+        momentum *= 0.8;
+        currentPrice += (Math.random() - 0.5) * 0.004;
+    }
+
+    // 💣 spike
+    if (Math.random() > 0.98) {
+        let shock = (Math.random() > 0.5 ? 1 : -1) * (0.04 + Math.random() * 0.04);
+        currentPrice += shock;
+        momentum = shock * 0.4;
+    }
+
+    let price = currentPrice;
+
+    // ===============================
+    // 🔥 CREATE FIRST CANDLE
+    // ===============================
+    if (!currentCandle) {
+        let time = Math.floor(Date.now() / candleLife) * candleLife;
+
+        currentCandle = {
+            open: price,
+            high: price,
+            low: price,
+            close: price,
+            time
+        };
+
+        candles.push(currentCandle);
+    }
+
+    // ===============================
+    // 🔥 UPDATE LIVE CANDLE
+    // ===============================
+    currentCandle.close = price;
+
+    // 🔥 REAL WICKS
+    let wick = Math.random() * 0.02;
+    if (Math.random() > 0.94) wick += Math.random() * 0.08;
+
+    currentCandle.high = Math.max(currentCandle.high, price + wick);
+    currentCandle.low = Math.min(currentCandle.low, price - wick);
+
+    // ===============================
+    // 🔥 NEW CANDLE (15s aligned)
+    // ===============================
+    let now = Date.now();
+    let slot = Math.floor(now / candleLife) * candleLife;
+
+    if (slot > currentCandle.time) {
+        currentCandle = {
+            open: price,
+            high: price,
+            low: price,
+            close: price,
+            time: slot
+        };
+
+        candles.push(currentCandle);
+
+        const maxCandles = Math.floor(canvas.width / (candleWidth + gap));
+        if (candles.length > maxCandles) candles.shift();
+    }
+
+    // SAVE
+    localStorage.setItem("candles", JSON.stringify(candles));
+    localStorage.setItem("lastTime", Date.now());
+    localStorage.setItem("lastPrice", currentPrice);
+
+    document.querySelector(".price-bubble").textContent = price.toFixed(5);
+
+    drawChart();
+
+    requestAnimationFrame(loop);
+}
+loop();
+updateTimer();
+updateProfit(); // 👈 ADD THIS
+
+// ===============================
+// 🔥 DRAW CHART (FIXED BODY)
+// ===============================
+function drawChart() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (candles.length < 2) return;
+
+    let prices = candles.flatMap(c => [c.high, c.low]);
+    let max = Math.max(...prices);
+    let min = Math.min(...prices);
+
+    let range = max - min;
+    let padding = Math.max(range * 0.3, 0.0005);
+    max += padding;
+    min -= padding;
+
+    let scaleY = canvas.height / (max - min);
+
+    let rightOffset = 90;
+    let startX = canvas.width - rightOffset - (candles.length * (candleWidth + gap));
+
+    candles.forEach((c, i) => {
+        let x = startX + i * (candleWidth + gap);
+
+        let openY = canvas.height - (c.open - min) * scaleY;
+        let closeY = canvas.height - (c.close - min) * scaleY;
+        let highY = canvas.height - (c.high - min) * scaleY;
+        let lowY = canvas.height - (c.low - min) * scaleY;
+
+        let isUp = c.close > c.open;
+
+        ctx.strokeStyle = isUp ? "#00c853" : "#f44336";
+        ctx.fillStyle = isUp ? "#00c853" : "#f44336";
+
+        // wick
+        ctx.beginPath();
+        ctx.moveTo(x + candleWidth / 2, highY);
+        ctx.lineTo(x + candleWidth / 2, lowY);
+        ctx.stroke();
+
+        // 🔥 BODY THAT FOLLOWS PRICE
+        let bodyHeight = Math.abs(closeY - openY);
+        if (bodyHeight < 2) bodyHeight = 2;
+
+        ctx.fillRect(
+            x,
+            Math.min(openY, closeY),
+            candleWidth,
+            bodyHeight
+        );
+    });
+
+    let lastPrice = candles[candles.length - 1].close;
+    let y = canvas.height - (lastPrice - min) * scaleY;
+
+    document.querySelector(".price-line").style.top = y + "px";
+}
+</script>
+<script>
+function goProfile() {
+    window.location.href = "Profile.html";
+}
+</script>
+<script>
+function goWithdraw() {
+    window.location.href = "withdrawal.html";
+}
+</script>
+<script>
+function goDeposit() {
+    window.location.href = "Deposit.html";
+}
+</script>

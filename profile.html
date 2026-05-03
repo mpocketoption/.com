@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+
+<style>
+:root {
+    --bg: #1e2433;
+    --card: #22293d;
+    --text: #ffffff;
+    --sub: #bfc7d5;
+    --accent: #00c853;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* Responsive container */
+.page {
+    width: 100%;
+    max-width: 420px;
+    margin: auto;
+    padding: 16px;
+}
+
+/* PROFILE */
+.profile {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+.avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #00ff66;
+    background: linear-gradient(135deg, #2a3147, #1e2433);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+
+.profile-info h2 {
+    font-size: clamp(16px, 2vw, 18px);
+}
+.profile-info p {
+    font-size: 12px;
+    color: var(--sub);
+    margin: 2px 0;
+}
+
+.badge {
+    background: var(--accent);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+/* DEPOSIT */
+.deposit {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 14px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid var(--accent);
+    background: rgba(0, 255, 150, 0.05);
+    transition: 0.2s;
+}
+
+.deposit:active {
+    transform: scale(0.97);
+}
+
+/* CARDS */
+.cards {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.card {
+    flex: 1;
+    height: 100px;
+    border-radius: 16px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 13px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+}
+
+.card:active {
+    transform: scale(0.95);
+}
+
+.card.green {
+    background: linear-gradient(135deg, #9cff00, #00c853);
+}
+
+.card.blue {
+    background: linear-gradient(135deg, #003cff, #00bcd4);
+}
+
+/* MENU */
+.section {
+    margin-top: 25px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 10px;
+    border-radius: 12px;
+    color: #cfd6e4;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.menu-item:hover {
+    background: #2a3147;
+}
+
+.menu-item:active {
+    transform: scale(0.97);
+}
+
+.menu-item.active {
+    color: white;
+    background: #2a3147;
+}
+
+.menu-item span {
+    margin-left: 12px;
+}
+
+.right {
+    margin-left: auto;
+}
+
+.badge-num {
+    background: #00bcd4;
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+}
+
+/* Divider */
+.divider {
+    height: 1px;
+    background: #2f3650;
+    margin: 10px 0;
+}
+
+/* FOOTER STICKY */
+.bottom {
+    margin-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* Tablet responsiveness */
+@media (min-width: 600px) {
+    .page {
+        max-width: 500px;
+    }
+
+    .avatar {
+        width: 80px;
+        height: 80px;
+    }
+
+    .card {
+        height: 120px;
+    }
+}
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 14px; /* more breathing space */
+    margin-bottom: 10px; /* spacing between items */
+    border-radius: 14px;
+    color: #cfd6e4;
+    font-size: 15px;
+    gap: 14px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.04); /* subtle card feel */
+    transition: 0.2s;
+}
+
+.menu-item svg {
+    width: 20px;
+    height: 20px;
+    min-width: 20px; /* prevents shrinking */
+    display: block;
+}
+.menu-item {
+    transition: 0.2s;
+}
+.menu-item.active {
+    background: #2c344d;
+    color: #fff;
+    border: none;
+}
+.profile {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.deposit {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 18px;
+    text-align: center;
+    font-weight: 600;
+    border: 1.5px solid #00c853;
+    background: rgba(0, 255, 150, 0.08);
+}
+.page {
+    padding: 18px 16px 30px;
+}
+#user-balance {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ff99;
+}
+.profile {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+}
+
+/* Avatar ring */
+.avatar-wrap {
+    position: relative;
+}
+
+.avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 6px solid #00c853;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2a3147;
+}
+
+/* Online dot */
+.status-dot {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    width: 18px;
+    height: 18px;
+    background: #00c853;
+    border-radius: 50%;
+    border: 3px solid #1e2433;
+}
+
+/* Name + verify */
+.top-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-row h2 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Verified badge */
+.verify {
+    background: #3a4664;
+    border-radius: 50%;
+    padding: 4px;
+    display: flex;
+}
+
+/* Info rows */
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #9aa4b2;
+    margin-top: 6px;
+}
+
+.info-row svg {
+    min-width: 16px;
+}
+
+/* Rwanda flag */
+.flag-rw {
+    width: 22px;
+    height: 14px;
+    border-radius: 2px;
+    margin-left: 6px;
+    background:
+        linear-gradient(#00a1de 50%, #fad201 50%, #fad201 75%, #20603d 75%);
+}
+
+/* Badge */
+.badge {
+    margin-top: 10px;
+    background: #00c853;
+    padding: 5px 14px;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 500;
+}
+#user-email {
+    color: #8f9bb3;
+    font-size: 13px;
+}
+a.menu-item {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    color: inherit;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  color: #8f9bb3;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.menu-item,
+.menu-item * {
+  -webkit-tap-highlight-color: transparent;
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+<div class="profile">
+
+  <!-- Avatar -->
+  <div class="avatar-wrap">
+    <div class="avatar">
+      <svg viewBox="0 0 24 24" width="42" fill="#9aa4b2">
+        <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+      </svg>
+    </div>
+    <div class="status-dot"></div>
+  </div>
+
+  <!-- Info -->
+  <div class="profile-info">
+
+    <!-- Name -->
+    <div class="top-row">
+      <h2 id="user-name">Unknow User</h2>
+
+      <!-- Verified badge -->
+      <div class="verify">
+        <svg viewBox="0 0 24 24" width="14" fill="#fff">
+          <path d="M9 16.2l-3.5-3.5L4 14.2l5 5 12-12-1.5-1.5z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ID -->
+    <div class="info-row">
+      <svg viewBox="0 0 24 24" width="16" fill="#8f9bb3">
+        <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-8 1.7-8 4v2h16v-2c0-2.3-4.7-4-8-4z"/>
+      </svg>
+      <p id="user-id">id 128985049</p>
+    </div>
+
+    <!-- Email -->
+    <div class="info-row">
+      <svg viewBox="0 0 24 24" width="16" fill="#8f9bb3">
+        <path d="M2 4h20v16H2V4zm10 9l10-7H2l10 7z"/>
+      </svg>
+<p id="user-email">Loading...</p>
+    </div>
+
+    <!-- Balance -->
+    <div class="info-row">
+   <svg viewBox="0 0 24 24" width="18" fill="none" stroke="#8f9bb3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="2" y="6" width="20" height="14" rx="3"/>
+  <path d="M16 12h4"/>
+  <circle cx="16" cy="12" r="1.2" fill="#8f9bb3"/>
+</svg>
+      <p id="user-balance">$0</p>
+    </div>
+
+   <div class="info-row ip-row">
+  
+  <svg viewBox="0 0 24 24" width="16" fill="none" stroke="#8f9bb3" stroke-width="1.6">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>
+  </svg>
+
+  <span id="user-ip">Loading</span>
+
+
+</div>
+    <div class="badge">Beginner</div>
+
+  </div>
+
+</div>
+    <!-- Deposit -->
+<div class="deposit" onclick="goDeposit()">Deposit</div>
+
+<div class="section">
+
+    <!-- Trading -->
+<div class="menu-item" onclick="goDashboard()">
+<svg viewBox="0 0 24 24" width="18" fill="currentColor">
+<path d="M3 17l6-6 4 4 8-8v6h2V3h-10v2h6l-6 6-4-4-7 7z"/>
+</svg>
+<span>Trading</span>
+</div>
+
+<!-- Finance -->
+<div class="menu-item" onclick="goDashboard()">
+<svg viewBox="0 0 24 24" width="18" fill="currentColor">
+<path d="M12 1l3 5 5 .5-3.5 3 1 5-5-2.5-5 2.5 1-5L4 6.5 9 6z"/>
+</svg>
+<span>Finance</span>
+</div>
+
+<!-- Profile -->
+<div class="menu-item" onclick="goProfile()">
+<svg viewBox="0 0 24 24" width="18"><path fill="currentColor" d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+<span>Profile</span>
+</div>
+
+<!-- Market -->
+<div class="menu-item" onclick="goDashboard()">
+<svg viewBox="0 0 24 24" width="18" fill="currentColor">
+<path d="M4 19h16v2H4zM6 17h2V9H6zm5 0h2V5h-2zm5 0h2v-7h-2z"/>
+</svg>
+<span>Market</span>
+</div>
+
+<!-- Achievements -->
+<div class="menu-item">
+<svg viewBox="0 0 24 24" width="18" fill="currentColor">
+<path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/>
+</svg>
+<span>Achievements</span>
+</div>
+
+<!-- Chat -->
+<div class="menu-item" onclick="goDashboard()">
+<svg viewBox="0 0 24 24" width="18"><path fill="currentColor" d="M2 2h20v14H6l-4 4z"/></svg>
+<span>Chat</span>
+<div class="right badge-num"></div>
+</div>
+
+<!-- Help -->
+<div class="menu-item">
+<svg viewBox="0 0 24 24" width="18" fill="currentColor">
+<path d="M11 18h2v2h-2zm1-16C6.5 2 2 6.5 2 12h2c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8c-1.7 0-3.3-.5-4.6-1.4l-1.4 1.4C7.6 21.3 9.7 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2z"/>
+</svg>
+<span>Help</span>
+</div>
+
+<!-- Language -->
+<div class="menu-item">
+<svg viewBox="0 0 24 24" width="18" fill="currentColor">
+<path d="M12 2a10 10 0 100 20 10 10 0 000-20zm7 10h-3a15 15 0 00-2-7 8 8 0 015 7zM12 4c1.5 2 2.5 5 2.5 8H9.5C9.5 9 10.5 6 12 4zM5 12h3a15 15 0 002 7 8 8 0 01-5-7zM12 20c-1.5-2-2.5-5-2.5-8h5C14.5 15 13.5 18 12 20z"/>
+</svg>
+<span>English</span>
+</div>
+
+<!-- Settings -->
+<div class="menu-item">
+<svg viewBox="0 0 24 24" width="18" fill="currentColor">
+<path d="M19.4 13a7.8 7.8 0 000-2l2.1-1.6-2-3.4-2.5 1a7.5 7.5 0 00-1.7-1l-.4-2.6h-4l-.4 2.6c-.6.2-1.2.6-1.7 1l-2.5-1-2 3.4L4.6 11a7.8 7.8 0 000 2l-2.1 1.6 2 3.4 2.5-1c.5.4 1.1.8 1.7 1l.4 2.6h4l.4-2.6c.6-.2 1.2-.6 1.7-1l2.5 1 2-3.4z"/>
+</svg>
+<span>Settings</span>
+</div>
+
+<!-- Google Play -->
+<div class="menu-item">
+<svg viewBox="0 0 24 24" width="18"><path fill="currentColor" d="M3 2l13 10L3 22z"/></svg>
+<span>Google Play</span>
+</div>
+
+<!-- Logout -->
+<div class="menu-item">
+<svg viewBox="0 0 24 24" width="18"><path fill="currentColor" d="M16 13v-2H7V8l-5 4 5 4v-3zM20 3H10v2h10v14H10v2h10c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+<span>Logout</span>
+</div>
+
+</div>
+<script>
+function uidToNumber(uid) {
+  let num = "";
+  for (let i = 0; i < uid.length; i++) {
+    num += uid.charCodeAt(i);
+  }
+  return num.slice(0, 9);
+}
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyCbuLoyGu6v7dJUDQ0iM2DkvEZs0D9z2Do",
+  authDomain: "mfs-africa-ltd.firebaseapp.com",
+  databaseURL: "https://mfs-africa-ltd-default-rtdb.firebaseio.com",
+  projectId: "mfs-africa-ltd",
+  storageBucket: "mfs-africa-ltd.appspot.com",
+  messagingSenderId: "686833267635",
+  appId: "1:686833267635:web:c5a531346887f6452bd1c6"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+const emailEl = document.getElementById("user-email");
+const balanceEl = document.getElementById("user-balance");
+const idEl = document.getElementById("user-id");
+const nameEl = document.getElementById("user-name");
+
+onAuthStateChanged(auth, async (user) => {
+
+  if (user) {
+
+    // ✅ EMAIL (from logged user)
+    emailEl.textContent = maskEmail(user.email);
+
+    // ✅ USER ID (short like real apps)
+idEl.textContent = "ID " + uidToNumber(user.uid);
+
+    // ✅ NAME (fallback if none)
+    nameEl.textContent = user.displayName || "Trader";
+
+    // ✅ BALANCE from DB
+    try {
+      const snap = await get(ref(db, "users/" + user.uid));
+
+      if (snap.exists()) {
+        const data = snap.val();
+        balanceEl.textContent = "$" + (data.balance ?? 0);
+      } else {
+        balanceEl.textContent = "$0";
+      }
+
+    } catch (err) {
+      balanceEl.textContent = "$0";
+    }
+
+  } else {
+    // ❌ Not logged in
+    emailEl.textContent = "Not logged in";
+    idEl.textContent = "ID ---";
+    nameEl.textContent = "Unknown User";
+    balanceEl.textContent = "$0";
+  }
+
+});
+</script>
+<script>
+function maskEmail(email) {
+  const [name, domain] = email.split("@");
+
+  const visibleStart = name.slice(0, 3);
+  const visibleEnd = name.slice(-2);
+
+  return `${visibleStart}***${visibleEnd}@${domain}`;
+}
+</script>
+<script>
+function goDeposit() {
+  window.location.href = "Deposit.html";
+}
+</script>
+<script>
+function goDashboard() {
+  window.location.href = "Dashboard.html";
+}
+</script>
+
+<script>function getFlagEmoji(countryCode) {
+  return countryCode
+    .toUpperCase()
+    .replace(/./g, char =>
+      String.fromCodePoint(127397 + char.charCodeAt())
+    );
+}
+document.querySelectorAll(".menu-item").forEach(item => {
+  item.addEventListener("click", function () {
+    document.querySelectorAll(".menu-item").forEach(i => i.classList.remove("active"));
+    this.classList.add("active");
+  });
+});
+function goProfile() {
+  window.location.href = "verify.html";
+}
+async function loadUserIP() {
+  try {
+    // Get IP
+    const ipRes = await fetch("https://api.ipify.org?format=json");
+    const ipData = await ipRes.json();
+
+    const ip = ipData.ip;
+
+    // Get location from IP
+    const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
+    const geo = await geoRes.json();
+
+    const ipEl = document.getElementById("user-ip");
+
+    const flag = getFlagEmoji(geo.country_code || "UN");
+
+    ipEl.textContent =
+      `${ip} ${flag} | ${geo.city || "Unknown"}, ${geo.country_name || ""}`;
+
+  } catch (err) {
+    document.getElementById("user-ip").textContent =
+      "IP unavailable";
+  }
+}
+
+loadUserIP();
+</script>
+</body>
+</html>

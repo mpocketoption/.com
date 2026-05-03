@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Top-up</title>
+
+<style>
+:root {
+    --bg: #0b0e14;
+    --card: #1a202c;
+    --card-light: #222a38;
+    --text-muted: #8a94a6;
+    --blue: #00a8ff;
+    --green: #00c853;
+}
+
+/* 🔥 PAGE */
+body {
+    margin: 0;
+    background: #0c1324;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 🔥 CONTENT */
+.topup-page {
+    padding: 18px;
+    padding-bottom: 120px;
+}
+
+/* 🔥 TITLE */
+.page-title {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 22px;
+}
+
+/* 🔥 TOP CARDS */
+.topup-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #1a2238;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 14px;
+
+    overflow: hidden;
+}
+
+/* gradient card */
+.glow-card {
+    background: linear-gradient(135deg, #0b6a88, #1a2238);
+}
+
+/* text */
+.topup-card h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.topup-card p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: #9aa4b2;
+}
+
+/* icon (image style) */
+.card-icon {
+    font-size: 42px;
+    opacity: 0.95;
+}
+
+/* 🔥 FORM */
+.form-group {
+    margin-top: 20px;
+}
+
+.form-group label {
+    font-size: 13px;
+    color: #9aa4b2;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* inputs */
+.input-select,
+.input-search {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+
+    padding: 14px 14px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    color: #cfd6e4;
+    font-size: 14px;
+}
+
+/* 🔥 SECTION TITLE */
+.section-title {
+    margin: 26px 0 12px;
+    font-size: 14px;
+    color: #9aa4b2;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* dashed line */
+.section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    border-bottom: 1px dashed rgba(255,255,255,0.2);
+}
+
+/* 🔥 METHOD CARD */
+.method-card {
+    background: #121a30;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+
+    margin-bottom: 14px;
+    overflow: hidden;
+}
+
+/* top row */
+.method-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* icon (bigger like screenshot) */
+.method-icon {
+    font-size: 28px;
+}
+
+/* divider */
+.method-bottom {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 12px 16px;
+
+    font-size: 13px;
+    color: #9aa4b2;
+
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* split line like screenshot */
+.method-bottom span {
+    flex: 1;
+    text-align: center;
+}
+
+.method-bottom span:first-child {
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+/* 🔥 HEADER CONTAINER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 16px;
+    position: relative;
+    z-index: 50;
+}
+
+/* 🔥 subtle bottom glow line */
+.header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(0, 168, 255, 0.7),
+        transparent
+    );
+
+    box-shadow: 0 0 8px rgba(0,168,255,0.6);
+}
+
+/* 🔥 LEFT SIDE */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px; /* tighter than 48px */
+}
+
+/* 🔥 PROFILE */
+.profile-container {
+    width: 42px;
+    height: 42px;
+
+    background: #2d3748;
+    border-radius: 50%;
+
+    border: 2px solid #00c853;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+}
+
+.profile-container {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid #00c853;
+}
+
+.profile-badge {
+    position: absolute;
+
+    width: 14px;
+    height: 14px;
+
+    background: #00c853;
+    border: 2px solid #0b0e14;
+    border-radius: 50%;
+
+    top: 0;
+    right: 0;
+
+    transform: translate(35%, -35%); /* 🔥 THIS FIXES IT */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 🔥 GIFT ICON */
+.gift-box {
+    width: 42px;
+    height: 42px;
+
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    backdrop-filter: blur(4px);
+}
+
+.gift-svg {
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0 0 6px rgba(0,168,255,0.6));
+}
+
+/* 🔥 RIGHT SIDE */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 🔥 BALANCE */
+.balance-pill {
+    background: rgba(17,21,28,0.95);
+    border: 1px solid rgba(0, 200, 83, 0.4);
+
+    border-radius: 12px;
+    padding: 6px 12px;
+    min-width: 95px;
+
+    backdrop-filter: blur(6px);
+}
+
+.balance-label {
+    font-size: 10px;
+    color: #8a94a6;
+}
+
+.balance-val {
+    font-size: 16px;
+    font-weight: 700;
+    color: #00c853;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* 🔥 WALLET BUTTON */
+.wallet-btn {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+
+    background: radial-gradient(circle at top left, #065f46, #043d2e);
+    border: 1px solid #00c853;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wallet-btn svg {
+    width: 22px;
+    height: 22px;
+    stroke: #00c853;
+    stroke-width: 2.2;
+}
+/* 🔥 BOTTOM NAV CONTAINER */
+/* 🔥 FIXED BOTTOM NAV */
+.bottom-nav {
+    position: fixed;   /* 🔥 KEY */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    background: #0b0e14;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+
+    padding: 5px 7px calc(20px + env(safe-area-inset-bottom));
+
+    z-index: 9999; /* always on top */
+}
+
+/* 🔥 TOP GLOW LINE */
+.bottom-nav::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(0, 200, 83, 0.6),
+        transparent
+    );
+
+    box-shadow: 0 0 10px rgba(0,200,83,0.5);
+}
+
+/* 🔥 NAV CARD */
+.nav-card {
+    flex: 1;
+
+    background: #1c2330;
+    border-radius: 14px;
+
+    padding: 10px 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    border: 1px solid transparent;
+
+    transition: all 0.2s ease;
+}
+
+/* 🔥 ICON */
+.nav-card svg {
+    width: 22px;
+    height: 22px;
+
+    stroke: #8a94a6;
+    stroke-width: 2.5;
+
+    transition: all 0.2s ease;
+}
+
+/* 🔥 TEXT */
+.nav-card span {
+    font-size: 10px;
+    color: #8a94a6;
+    transition: all 0.2s ease;
+}
+
+/* 🔥 ACTIVE STATE */
+.nav-card.active {
+    background: linear-gradient(
+        180deg,
+        rgba(0, 200, 83, 0.15),
+        rgba(0, 200, 83, 0.05)
+    );
+
+    border: 1px solid rgba(0, 200, 83, 0.4);
+
+    box-shadow:
+        0 0 12px rgba(0, 200, 83, 0.3),
+        inset 0 0 6px rgba(0, 200, 83, 0.15);
+}
+
+.nav-card.active svg {
+    stroke: #00c853;
+}
+
+.nav-card.active span {
+    color: #00c853;
+}
+
+/* 🔥 PRESS EFFECT */
+.nav-card:active {
+    transform: scale(0.92);
+}
+
+/* 🔥 SAFE AREA (for phones like iPhone / Android gesture bar) */
+.bottom-nav {
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+}
+.nav-card.active {
+    animation: glowPulse 1.5s infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(0,200,83,0.3); }
+    50% { box-shadow: 0 0 18px rgba(0,200,83,0.6); }
+}
+.nav-card svg * {
+    fill: none !important;   /* 🔥 FORCE remove black */
+}
+/* 🔥 ONLY wallet icon fix */
+.wallet-btn svg,
+.wallet-btn svg * {
+    fill: none !important;
+    stroke: #00c853;
+    stroke-width: 2.2;
+}
+.card-icons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.pay-logo {
+    height: 30px;
+    object-fit: contain;
+}
+.topup-card:nth-child(2) div:last-child {
+    text-align: center;
+    width: 100%;
+}
+.input-select {
+    width: 100%;
+    background: #11151c;
+    padding: 12px;
+    border-radius: 10px;
+    color: #ccc;
+    border: none;
+    outline: none;
+
+    appearance: none; /* remove default arrow */
+    -webkit-appearance: none;
+
+    position: relative;
+}
+
+/* custom arrow */
+.input-select {
+    background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='20' viewBox='0 0 24 24' width='20'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+.input-select {
+    width: 100%;
+    background: #11151c;
+    padding: 12px;
+    border-radius: 10px;
+    color: #ccc;
+
+    border: 1px solid rgba(255,255,255,0.15); /* 🔥 THIS is missing */
+}
+<div class="nav-card active">
+.card {
+    background: var(--card);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+/* TITLE */
+.title {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+/* WARNING */
+.warning {
+    background: rgba(255, 140, 0, 0.1);
+    border: 1px solid orange;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+/* INPUT */
+.input-group {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.input-group input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 12px;
+    color: white;
+    font-size: 16px;
+}
+
+.input-group span {
+    padding: 12px;
+    background: var(--card-light);
+}
+
+/* QUICK BUTTONS */
+.quick {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.quick button {
+    flex: 1;
+    padding: 10px;
+    background: var(--card-light);
+    border: none;
+    border-radius: 10px;
+    color: white;
+}
+
+/* INFO BOX */
+.info {
+    background: var(--card-light);
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 15px;
+}
+
+/* GIFTS */
+.gifts {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.gift {
+    flex: 1;
+    height: 60px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1f9d6a, #4b6cb7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+/* RESULT */
+.result {
+    background: var(--card);
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.result h2 {
+    margin: 10px 0;
+}
+
+/* BUTTON */
+.btn {
+    width: 100%;
+    background: var(--green);
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* FOOTER NAV */
+.nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: var(--card);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+}
+
+.nav div {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.nav .active {
+    color: #4b8cff;
+}
+.btn, .quick button, .nav-card, .gift {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:active,
+.quick button:active,
+.gift:active {
+    transform: scale(0.96);
+    opacity: 0.9;
+}
+#receive {
+    transition: all 0.25s ease;
+}
+.header {
+    backdrop-filter: blur(10px);
+    background: rgba(11,14,20,0.7);
+}
+.amount-box {
+    margin-bottom: 18px;
+}
+
+.amount-box label {
+    font-size: 13px;
+    color: #8a94a6;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* 🔥 MAIN INPUT CONTAINER */
+.amount-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: linear-gradient(145deg, #0f172a, #1e293b);
+    border: 1px solid rgba(255,255,255,0.12);
+
+    padding: 14px 16px;
+    border-radius: 14px;
+
+    transition: 0.25s ease;
+}
+
+/* 🔥 GLOW ON FOCUS */
+.amount-input:focus-within {
+    border: 1px solid #00c853;
+    box-shadow: 0 0 12px rgba(0,200,83,0.5);
+}
+
+/* 💲 CURRENCY */
+.currency {
+    font-size: 18px;
+    font-weight: 600;
+    color: #00c853;
+}
+
+/* 🔥 INPUT FIELD */
+.amount-input input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* REMOVE ARROWS */
+.amount-input input::-webkit-outer-spin-button,
+.amount-input input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* PLACEHOLDER STYLE */
+.amount-input input::placeholder {
+    color: #6b7280;
+}
+/* 🔥 PROMO CONTAINER */
+.promo-box {
+    margin-bottom: 15px;
+}
+
+/* 🔥 TOGGLE ROW */
+.promo-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 14px;
+    color: #cfd6e4;
+
+    padding: 12px;
+    background: #11151c;
+    border-radius: 12px;
+
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* 🔥 SWITCH */
+.switch {
+    width: 44px;
+    height: 24px;
+    border-radius: 20px;
+    background: #2a3245;
+
+    position: relative;
+    transition: 0.3s;
+}
+
+.switch-dot {
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+
+    position: absolute;
+    top: 3px;
+    left: 4px;
+
+    transition: 0.3s;
+}
+
+/* ACTIVE */
+.switch.active {
+    background: #00c853;
+}
+
+.switch.active .switch-dot {
+    left: 22px;
+}
+
+/* 🔥 INPUT (hidden by default) */
+.promo-input {
+    margin-top: 10px;
+    display: none;
+
+    gap: 8px;
+}
+
+.promo-input input {
+    flex: 1;
+    background: #0f172a;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+
+    padding: 12px;
+    color: white;
+}
+
+.promo-input button {
+    background: #00c853;
+    border: none;
+    padding: 12px 14px;
+    border-radius: 10px;
+    color: white;
+}
+
+/* SHOW */
+.promo-input.show {
+    display: flex;
+}
+</style>
+</head>
+
+<body>
+  </div>
+    <div class="header">
+        <div class="header-left">
+            <div class="profile-container">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <div class="profile-badge">+</div>
+            </div>
+            <div class="gift-box">
+                <svg class="gift-svg" viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="10" width="16" height="11" rx="2" fill="white"/>
+                    <rect x="3" y="7" width="18" height="4" rx="1.5" fill="#00a8ff"/>
+                    <path d="M12 7v14M3 11h18" stroke="#00a8ff" stroke-width="2.5"/>
+                    <path d="M12 7c0-2.5-2-4-4-4s-3 2-3 4h7zm0 0c0-2.5 2-4 4-4s3 2 3 4h-7z" fill="#00a8ff" stroke="white" stroke-width="0.5"/>
+                </svg>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="balance-pill">
+                <span class="balance-label">QT Real USD</span>
+<div class="balance-val" id="balanceVal">0</div>
+            </div>
+            <div class="wallet-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><rect x="14" y="11" width="8" height="6" rx="2"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+<!-- ✅ NEW PAGE CONTENT -->
+<div class="topup-page">
+
+    <div class="page-title">Account top-up</div>
+
+<div class="card">
+    <div class="title">Visa, Mastercard (USD)</div>
+
+    <div class="warning">
+        Use only personal cards and funds for depositing
+    </div>
+
+<div class="amount-box">
+    <label>Enter amount</label>
+
+    <div class="amount-input">
+        <span class="currency">$</span>
+        <input type="number" id="amount" value="5">
+    </div>
+</div>
+
+    <div class="quick">
+        <button onclick="setAmount(150)">$150</button>
+        <button onclick="setAmount(200)">$200</button>
+        <button onclick="setAmount(300)">$300</button>
+        <button onclick="setAmount(500)">$500</button>
+    </div>
+
+    <div class="info">
+        Maximum number of card transactions per day: 10. 
+        Increase transaction amount for better profitability.
+    </div>
+
+<div class="promo-box">
+
+    <div class="promo-toggle" onclick="togglePromo()">
+        <span>I have a promo code</span>
+
+        <div class="switch" id="promoSwitch">
+            <div class="switch-dot"></div>
+        </div>
+    </div>
+
+    <div class="promo-input" id="promoInput">
+        <input type="text" placeholder="Enter promo code">
+        <button>Apply</button>
+    </div>
+
+</div>
+
+    <div style="margin-bottom:10px;">Choose your Gift:</div>
+
+    <div class="gifts">
+        <div class="gift">🎁</div>
+        <div class="gift">🎁</div>
+        <div class="gift">🎁</div>
+        <div class="gift">🎁</div>
+        <div class="gift">🎁</div>
+    </div>
+</div>
+
+<div class="result">
+    <div>You receive:</div>
+    <h2 id="receive">$5</h2>
+    <div style="color: var(--muted); font-size:14px;">+ Trader’s box</div>
+
+    <button class="btn" onclick="pay()">Continue and pay $5</button>
+</div>
+
+</div>
+
+    <div class="bottom-nav">
+        <div class="nav-card">
+            <svg viewBox="0 0 24 24">
+  <polyline points="3 17 9 11 13 15 21 7"/>
+</svg>
+            <span>Trades</span>
+        </div>
+        <div class="nav-card">
+<svg viewBox="0 0 24 24">
+  <rect x="4" y="10" width="3" height="10" fill="none"/>
+  <rect x="10" y="6" width="3" height="14" fill="none"/>
+  <rect x="16" y="3" width="3" height="17" fill="none"/>
+</svg>
+            <span>Signals</span>
+        </div>
+        <div class="nav-card">
+          <svg viewBox="0 0 24 24">
+  <circle cx="9" cy="8" r="3"/>
+  <circle cx="17" cy="8" r="3"/>
+  <path d="M2 20c0-3 3-5 7-5s7 2 7 5"/>
+</svg>
+            <span>Social Trading</span>
+        </div>
+        <div class="nav-card">
+<svg viewBox="0 0 24 24">
+  <polyline points="13 2 3 14 11 14 9 22 21 9 13 9 13 2"/>
+</svg>
+            <span>Express</span>
+        </div>
+        <div class="nav-card">
+<svg viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 16 14"/>
+</svg>
+            <span>Pending</span>
+        </div>
+    </div>
+<script>
+  function setAmount(val){
+    document.getElementById("amount").value = val;
+
+    const receive = document.getElementById("receive");
+    receive.style.transform = "scale(1.15)";
+    receive.innerText = "$" + val;
+
+    setTimeout(() => {
+        receive.style.transform = "scale(1)";
+    }, 150);
+
+    document.querySelector(".btn").innerText = "Continue and pay $" + val;
+}
+function togglePromo() {
+    const sw = document.getElementById("promoSwitch");
+    const input = document.getElementById("promoInput");
+
+    sw.classList.toggle("active");
+    input.classList.toggle("show");
+}
+  const amountInput = document.getElementById("amount");
+
+amountInput.addEventListener("input", () => {
+    const val = amountInput.value || 0;
+
+    const receive = document.getElementById("receive");
+
+    receive.style.opacity = "0.5";
+    receive.innerText = "$" + val;
+
+    setTimeout(() => {
+        receive.style.opacity = "1";
+    }, 120);
+
+    document.querySelector(".btn").innerText = "Continue and pay $" + val;
+});
+const navCards = document.querySelectorAll(".nav-card");
+
+navCards.forEach(card => {
+    card.addEventListener("click", () => {
+
+        // remove active from all
+        navCards.forEach(c => c.classList.remove("active"));
+
+        // add to clicked one
+        card.classList.add("active");
+
+    });
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KYC Profile</title>
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* 🚫 stops left/right scroll */
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg, #0c3a66, #062c4a);
+    color: #fff;
+}
+.container {
+    max-width: 420px;
+    width: 100%;
+    margin: auto;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+/* TITLE */
+.title {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+/* CARD */
+.card {
+    background: #0f2e4d;
+    border-radius: 14px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+/* SECTION */
+.section-title {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-bottom: 12px;
+}
+
+/* ROW */
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    gap: 10px;
+    flex-wrap: wrap; /* prevents overflow */
+}
+.row:last-child {
+    border-bottom: none;
+}
+
+/* TEXT */
+.label {
+    font-size: 14px;
+}
+.value {
+    font-size: 14px;
+    color: #ccc;
+    word-break: break-word;
+}
+.empty {
+    color: #ff4d6d;
+    font-style: italic;
+}
+
+/* EMAIL */
+.email-box {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* BADGES */
+.badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+}
+
+.orange { background: #ff7a00; }
+.blue { background: #3b82f6; }
+
+/* SWITCH */
+.switch {
+    width: 42px;
+    height: 22px;
+    background: #2c4c6d;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.switch::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    background: #bbb;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: 0.3s;
+}
+
+.switch.active {
+    background: #2ecc71;
+}
+
+.switch.active::before {
+    left: 22px;
+    background: #fff;
+}
+
+/* WARNING */
+.warning {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px dashed #ff4d6d;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+/* AVATAR */
+.avatar-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.avatar-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #ccc;
+    border: 5px solid #2ecc71;
+    overflow: hidden;
+    position: relative;
+}
+
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-plus {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #2ecc71;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #000;
+}
+
+/* UPLOAD */
+.upload {
+    margin-top: 15px;
+    width: 80%;
+    padding: 20px;
+    text-align: center;
+    border: 2px dashed #3b82f6;
+    border-radius: 1px;
+    color: #ccc;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(59,130,246,0.3);
+}
+.input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ccc;
+    font-size: 14px;
+    text-align: right;
+    width: 55%;
+}
+
+.input::placeholder {
+    color: #ff4d6d;
+    font-style: italic;
+}
+.editable {
+    width: 60%;
+    text-align: right;
+    position: relative;
+}
+
+.edit-box {
+    display: none;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.edit-box input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #5a6c85;
+    background: transparent;
+    color: #fff;
+    outline: none;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+.actions button {
+    width: 55px;
+    height: 42px;
+    border: none;
+    border-radius: 12px;
+    background: #2b3d55;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* hover / press feel */
+.actions button:active {
+    transform: scale(0.95);
+}
+
+/* SVG icon */
+.icon {
+    width: 20px;
+    height: 20px;
+    fill: #cbd5e1;
+}
+
+/* ✅ confirm button */
+.actions button:first-child {
+    background: #334155;
+}
+
+.actions button:first-child .icon {
+    fill: #ffffff;
+}
+
+/* ❌ cancel button */
+.actions button:last-child {
+    background: #1e293b;
+}
+
+.actions button:last-child .icon {
+    fill: #94a3b8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="title">Profile</div>
+
+<!-- IDENTITY INFO -->
+<div class="card">
+<div class="section-title">Identity info</div>
+<div class="row">
+  <div class="label">First name *</div>
+
+  <div class="editable" onclick="editField('firstName')">
+    <span id="firstNameText" class="value empty">Empty</span>
+
+    <div id="firstNameEdit" class="edit-box">
+      <input id="firstNameInput" type="text">
+<div class="actions">
+  <button onclick="saveField(event, 'firstName')">
+    <!-- CHECK ICON -->
+    <svg viewBox="0 0 24 24" class="icon">
+      <path d="M9 16.2l-3.5-3.5-1.4 1.4L9 19 20.3 7.7l-1.4-1.4z"/>
+    </svg>
+  </button>
+
+  <button onclick="cancelField(event, 'firstName')">
+    <!-- CLOSE ICON -->
+    <svg viewBox="0 0 24 24" class="icon">
+      <path d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/>
+    </svg>
+  </button>
+</div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="label">Last name *</div>
+
+  <div class="editable" onclick="editField('lastName')">
+    <span id="lastNameText" class="value empty">Empty</span>
+
+    <div id="lastNameEdit" class="edit-box">
+      <input id="lastNameInput" type="text">
+
+      <div class="actions">
+        <button onclick="saveField(event, 'lastName')">
+          <svg viewBox="0 0 24 24" class="icon">
+            <path d="M9 16.2l-3.5-3.5-1.4 1.4L9 19 20.3 7.7l-1.4-1.4z"/>
+          </svg>
+        </button>
+
+        <button onclick="cancelField(event, 'lastName')">
+          <svg viewBox="0 0 24 24" class="icon">
+            <path d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="label">Email</div>
+  <div class="email-box">
+    <span id="userEmail" class="value"></span>
+    <span class="badge blue">Verified</span>
+  </div>
+</div>
+<div class="row">
+  <div class="label">Phone</div>
+
+  <div class="editable" onclick="editField('phone')">
+    <span id="phoneText" class="value empty">Empty</span>
+
+    <div id="phoneEdit" class="edit-box">
+      <input id="phoneInput" type="tel">
+
+      <div class="actions">
+        <button onclick="saveField(event, 'phone')">
+          <svg viewBox="0 0 24 24" class="icon">
+            <path d="M9 16.2l-3.5-3.5-1.4 1.4L9 19 20.3 7.7l-1.4-1.4z"/>
+          </svg>
+        </button>
+
+        <button onclick="cancelField(event, 'phone')">
+          <svg viewBox="0 0 24 24" class="icon">
+            <path d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="label">Date of birth *</div>
+
+  <div class="editable" onclick="editField('dob')">
+    <span id="dobText" class="value empty">Empty</span>
+
+    <div id="dobEdit" class="edit-box">
+      <input id="dobInput" type="date">
+
+      <div class="actions">
+        <button onclick="saveField(event, 'dob')">
+          <svg viewBox="0 0 24 24" class="icon">
+            <path d="M9 16.2l-3.5-3.5-1.4 1.4L9 19 20.3 7.7l-1.4-1.4z"/>
+          </svg>
+        </button>
+
+        <button onclick="cancelField(event, 'dob')">
+          <svg viewBox="0 0 24 24" class="icon">
+            <path d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+<div class="label">Islamic halal account</div>
+<div class="switch" onclick="toggleSwitch(this)"></div>
+</div>
+
+<div style="font-size:12px; opacity:0.6;">* Required data</div>
+</div>
+<div class="card">
+<div class="section-title">
+Identity status <span id="statusBadge" class="badge orange">Unverified</span>
+</div>
+
+<div id="identityContent">
+
+<div class="warning" id="warningBox">
+Before uploading the documents please fill in this information in your profile: First name, Last name, Date of birth
+</div>
+
+<div id="verifyBox" style="display:none; margin-top:10px;">
+<div style="background: rgba(255,165,0,0.1); border:1px dashed orange; padding:12px; border-radius:10px; font-size:13px;">
+⚠️ To start the verification procedure, please select the country of residence, which is indicated in your ID document.
+</div>
+<select id="country" style="margin-top:10px; width:100%; padding:10px; border-radius:8px; background:#0f2e4d; color:#fff; border:1px solid #5a6c85;">
+<option value="">Choose the country</option>
+</select>
+
+<button onclick="confirmVerification()" style="margin-top:10px; width:100%; padding:12px; border:none; border-radius:10px; background:#16a34a; color:#fff; font-weight:bold;">
+Confirm
+</button>
+</div>
+
+</div>
+</div>
+
+<!-- SOCIAL TRADING -->
+<div class="card">
+<div class="section-title">Social Trading</div>
+
+<div class="avatar-box">
+<div class="avatar-circle">
+<img id="avatarImg">
+<div class="avatar-plus">+</div>
+</div>
+
+<div class="upload" onclick="file.click()">
+Click or Drop image here
+<input type="file" id="file" hidden accept="image/*">
+</div>
+</div>
+
+<div class="row">
+<div class="label">Hide my profile</div>
+<div class="switch" onclick="toggleSwitch(this)"></div>
+</div>
+
+<div class="row">
+<div class="label">Nickname</div>
+<div class="value">user130273834</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+  let frontUploaded = false;
+let backUploaded = false;
+function toggleSwitch(el) {
+    el.classList.toggle("active");
+}
+
+const file = document.getElementById("file");
+file.addEventListener("change", function(e) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        document.getElementById("avatarImg").src = evt.target.result;
+    };
+    reader.readAsDataURL(e.target.files[0]);
+});
+function editField(id) {
+    if (isVerified) return; // 🔒 BLOCK editing after verification
+
+    document.getElementById(id + "Text").style.display = "none";
+    document.getElementById(id + "Edit").style.display = "flex";
+}
+function saveField(e, id) {
+    e.stopPropagation();
+
+    const input = document.getElementById(id + "Input");
+    const text = document.getElementById(id + "Text");
+
+    if (input.value.trim() === "") {
+        text.textContent = "Empty";
+        text.classList.add("empty");
+    } else {
+        if (input.type === "date") {
+            const d = new Date(input.value);
+            text.textContent = d.toDateString();
+        } else {
+            text.textContent = input.value;
+        }
+        text.classList.remove("empty");
+    }
+
+    text.style.display = "block";
+    document.getElementById(id + "Edit").style.display = "none";
+
+    checkIdentityStatus(); // ✅ ADD THIS
+}
+
+function cancelField(e, id) {
+    e.stopPropagation();
+
+    document.getElementById(id + "Edit").style.display = "none";
+    document.getElementById(id + "Text").style.display = "block";
+}
+function checkIdentityStatus() {
+    const first = document.getElementById("firstNameText").textContent;
+    const last = document.getElementById("lastNameText").textContent;
+    const dob = document.getElementById("dobText").textContent;
+
+    const isFilled =
+        first !== "Empty" &&
+        last !== "Empty" &&
+        dob !== "Empty";
+
+    if (isFilled) {
+        document.getElementById("warningBox").style.display = "none";
+        document.getElementById("verifyBox").style.display = "block";
+    } else {
+        document.getElementById("warningBox").style.display = "block";
+        document.getElementById("verifyBox").style.display = "none";
+    }
+}
+function loadCountries() {
+    const select = document.getElementById("country");
+
+    const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+
+    const countryCodes = [
+        "AF","AL","DZ","AD","AO","AR","AM","AU","AT","AZ","BS","BH","BD","BY","BE","BZ",
+        "BJ","BT","BO","BA","BW","BR","BN","BG","BF","BI","KH","CM","CA","CV","CF","TD",
+        "CL","CN","CO","KM","CD","CG","CR","HR","CU","CY","CZ","DK","DJ","DO","EC","EG",
+        "SV","GQ","ER","EE","SZ","ET","FJ","FI","FR","GA","GM","GE","DE","GH","GR","GT",
+        "GN","GW","GY","HT","HN","HU","IS","IN","ID","IR","IQ","IE","IL","IT","JM","JP",
+        "JO","KZ","KE","KI","KW","KG","LA","LV","LB","LS","LR","LY","LI","LT","LU","MG",
+        "MW","MY","MV","ML","MT","MR","MU","MX","MD","MC","MN","ME","MA","MZ","MM","NA",
+        "NR","NP","NL","NZ","NI","NE","NG","KP","MK","NO","OM","PK","PA","PG","PY","PE",
+        "PH","PL","PT","QA","RO","RU","RW","SA","SN","RS","SG","SK","SI","SO","ZA","KR",
+        "ES","LK","SD","SR","SE","CH","SY","TW","TJ","TZ","TH","TG","TO","TT","TN","TR",
+        "TM","UG","UA","AE","GB","US","UY","UZ","VE","VN","YE","ZM","ZW"
+    ];
+
+    // Sort countries alphabetically
+    const countries = countryCodes.map(code => ({
+        code,
+        name: regionNames.of(code)
+    })).sort((a, b) => a.name.localeCompare(b.name));
+
+    countries.forEach(country => {
+        const option = document.createElement("option");
+        option.value = country.name;
+        option.textContent = country.name;
+        select.appendChild(option);
+    });
+}
+
+// load on page start
+loadCountries();
+function confirmVerification() {
+    const country = document.getElementById("country").value;
+
+    if (!country) {
+        alert("Please select a country");
+        return;
+    }
+
+    // change badge
+    const badge = document.getElementById("statusBadge");
+    badge.textContent = "Pending";
+    badge.classList.remove("orange");
+    badge.style.background = "#3b82f6";
+
+    // load ID upload screen
+    document.getElementById("identityContent").innerHTML = `
+    
+    <div style="padding:15px;">
+
+        <!-- TOP BAR -->
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+            <div style="width:40px;height:40px;border-radius:50%;border:1px solid #555;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+                ←
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <div style="width:40px;height:40px;border-radius:50%;border:1px solid #555;display:flex;align-items:center;justify-content:center;">👤</div>
+                <div style="width:40px;height:40px;border-radius:50%;border:1px solid #555;display:flex;align-items:center;justify-content:center;">🌐</div>
+            </div>
+        </div>
+
+        <!-- TITLE -->
+        <h2 style="margin:10px 0;">Get ready to upload your ID</h2>
+
+       <div style="
+    background:#777;
+    border-radius:12px;
+    height:180px;
+    margin-bottom:20px;
+    overflow:hidden;
+    position:relative;
+">
+
+    <!-- IMAGE -->
+    <img src="ID.png" style="
+        width:100%;
+        height:100%;
+        object-fit:cover;
+    ">
+
+    <!-- OPTIONAL overlay text (if image missing) -->
+    <div style="
+        position:absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#ddd;
+        font-size:16px;
+        pointer-events:none;
+    ">
+    
+    </div>
+
+</div>
+
+        <!-- TIPS -->
+        <div style="font-size:14px;">
+            <div style="margin-bottom:8px;">✔ Upload a colored photo or file</div>
+            <div style="margin-bottom:8px;">✔ Take a photo in a well lit room</div>
+            <div style="margin-bottom:8px; color:#ff4d6d;">✖ Don't edit images of your document</div>
+        </div>
+
+        <div style="margin-top:10px; color:#3b82f6; cursor:pointer;">
+            View our guidelines
+        </div>
+
+        <!-- BUTTON -->
+        <button onclick="startUpload()" style="margin-top:20px; width:100%; padding:14px; border:none; border-radius:12px; background:#1d9bf0; color:#fff; font-size:16px;">
+            Continue
+        </button>
+
+        <!-- FOOTER -->
+        <div style="text-align:center; margin-top:15px; font-size:12px; opacity:0.6;">
+            Powered by sumsub
+        </div>
+
+    </div>
+    `;
+}
+function startUpload() {
+    // ✅ reset upload state
+    frontUploaded = false;
+    backUploaded = false;
+
+    document.getElementById("identityContent").innerHTML = `
+
+    <div style="padding:15px;">
+
+        <h2 style="margin-bottom:15px;">Upload your ID</h2>
+
+        <!-- FRONT SIDE -->
+        <div style="margin-bottom:20px;">
+            <div style="margin-bottom:8px;">Front side</div>
+
+            <div onclick="document.getElementById('frontInput').click()" style="
+                border:2px dashed #555;
+                border-radius:12px;
+                height:150px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                cursor:pointer;
+                overflow:hidden;
+                position:relative;
+            ">
+                <span id="frontText">Click to upload front side</span>
+                <img id="frontPreview" style="display:none; width:100%; height:100%; object-fit:cover;">
+            </div>
+
+            <input type="file" id="frontInput" accept="image/*" hidden>
+        </div>
+
+        <!-- BACK SIDE -->
+        <div style="margin-bottom:20px;">
+            <div style="margin-bottom:8px;">Back side</div>
+
+            <div onclick="document.getElementById('backInput').click()" style="
+                border:2px dashed #555;
+                border-radius:12px;
+                height:150px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                cursor:pointer;
+                overflow:hidden;
+                position:relative;
+            ">
+                <span id="backText">Click to upload back side</span>
+                <img id="backPreview" style="display:none; width:100%; height:100%; object-fit:cover;">
+            </div>
+
+            <input type="file" id="backInput" accept="image/*" hidden>
+        </div>
+
+        <button id="submitBtn" onclick="submitID()" style="
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:12px;
+            background:#555;
+            color:#aaa;
+            font-size:16px;
+            cursor:not-allowed;
+        " disabled>
+            Submit Verification
+        </button>
+
+    </div>
+    `;
+
+    // ✅ IMPORTANT: pass "front" and "back"
+    setupUploadPreview("frontInput", "frontPreview", "frontText", "front");
+    setupUploadPreview("backInput", "backPreview", "backText", "back");
+
+    // ✅ ensure button starts disabled visually
+    checkSubmitReady();
+}
+function setupUploadPreview(inputId, imgId, textId, type) {
+    const input = document.getElementById(inputId);
+
+    input.addEventListener("change", function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const img = document.getElementById(imgId);
+            const text = document.getElementById(textId);
+
+            img.src = evt.target.result;
+            img.style.display = "block";
+            text.style.display = "none";
+        };
+        reader.readAsDataURL(file);
+
+        // ✅ mark uploaded
+        if (type === "front") frontUploaded = true;
+        if (type === "back") backUploaded = true;
+
+        checkSubmitReady();
+    });
+}
+function submitID() {
+    const content = document.getElementById("identityContent");
+
+    // Show spinner UI
+    content.innerHTML = `
+        <div style="padding:20px; text-align:center;">
+
+            <div style="
+                width:50px;
+                height:50px;
+                border:4px solid #555;
+                border-top:4px solid #1d9bf0;
+                border-radius:50%;
+                margin:20px auto;
+                animation: spin 1s linear infinite;
+            "></div>
+
+            <div style="margin-top:15px; font-size:16px;">
+                Verifying your documents...
+            </div>
+
+            <div style="margin-top:8px; font-size:13px; opacity:0.6;">
+                This may take a few seconds
+            </div>
+
+        </div>
+
+        <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        </style>
+    `;
+
+    // Simulate verification delay
+    setTimeout(() => {
+        showVerifiedState();
+    }, 15000); // 2.5 seconds
+}
+
+function showVerifiedState() {
+    const badge = document.getElementById("statusBadge");
+
+    // Update badge
+    badge.textContent = "Verified";
+    badge.classList.remove("orange");
+    badge.style.background = "#16a34a";
+
+    // Replace card content
+    document.getElementById("identityContent").innerHTML = `
+        <div style="padding:20px; text-align:center;">
+
+            <div style="font-size:50px; margin-bottom:10px;">✅</div>
+
+            <h2 style="margin-bottom:10px;">Verification Complete</h2>
+
+            <div style="font-size:14px; opacity:0.7;">
+                Your identity has been successfully verified.
+            </div>
+
+        </div>
+    `;
+
+    // OPTIONAL: unlock rest of app
+    unlockUserFeatures();
+}
+function unlockUserFeatures() {
+    console.log("User is now verified — unlock features here");
+
+    // Examples:
+    // enable trading buttons
+    // remove restrictions
+    // allow withdrawals
+}
+function lockProfileFields() {
+    const editables = document.querySelectorAll(".editable");
+
+    editables.forEach(el => {
+        el.style.pointerEvents = "none"; // disable clicks
+        el.style.opacity = "0.6"; // faded look
+    });
+}
+function checkSubmitReady() {
+    const btn = document.getElementById("submitBtn");
+
+    if (frontUploaded && backUploaded) {
+        btn.disabled = false;
+        btn.style.background = "#16a34a";
+        btn.style.color = "#fff";
+        btn.style.cursor = "pointer";
+    } else {
+        btn.disabled = true;
+        btn.style.background = "#555";
+        btn.style.color = "#aaa";
+        btn.style.cursor = "not-allowed";
+    }
+}
+function showVerifiedState() {
+    const badge = document.getElementById("statusBadge");
+
+    badge.textContent = "Verified";
+    badge.classList.remove("orange");
+    badge.style.background = "#16a34a";
+
+    document.getElementById("identityContent").innerHTML = `
+        <div style="padding:20px; text-align:center;">
+            <div style="font-size:50px; margin-bottom:10px;"></div>
+            <h2 style="margin-bottom:10px;">Verified</h2>
+            <div style="font-size:14px; opacity:0.7;">
+                Your identity is verified.
+            </div>
+        </div>
+    `;
+
+    // ✅ mark as verified
+    isVerified = true;
+
+    // ✅ lock UI
+    lockProfileFields();
+
+    unlockUserFeatures();
+
+    // ✅ REDIRECT AFTER 4 SECONDS
+    setTimeout(() => {
+        window.location.href = "dashboard.html";
+    }, 4000);
+}
+let isVerified = false;
+</script>
+
+</body>
+</html>
